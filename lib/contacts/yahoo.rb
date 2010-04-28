@@ -89,6 +89,7 @@ class Contacts
   private
     
     def parse(data, options={})
+      @full_contacts += Contacts.parse_json(data)["response"]["ResultSet"]["Contacts"].to_a if data =~ /^\{"response":/
       @contacts ||= []
       @contacts += Contacts.parse_json(data)["response"]["ResultSet"]["Contacts"].to_a.select{|contact|!contact["email"].to_s.empty?}.map do |contact|
         name = contact["contactName"].split(",")

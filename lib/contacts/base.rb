@@ -18,7 +18,18 @@ class Contacts
       @captcha_token = options[:captcha_token]
       @captcha_response = options[:captcha_response]
       @connections = {}
+      @raw_data=[]
+      @full_contacts=[]
       connect
+    end
+    
+    def raw_data
+      @raw_data
+    end
+    
+    def full_contacts
+      contacts # get contacts if not got already
+      @full_contacts
     end
     
     def connect

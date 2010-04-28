@@ -134,6 +134,15 @@ class Contacts
     def parse(data, options={})
       data = CSV::Reader.parse(data)
       col_names = data.shift
+      
+      @full_contacts = data.map do |person|
+        hash={}
+        col_names.each_with_index do |n,i|
+          hash[n] = person[i] if person[i].present?
+        end
+        hash
+      end
+      
       @contacts = data.map do |person|
         ["#{person[0]} #{person[1]}", person[4]] if person[4] && !person[4].empty?
       end.compact

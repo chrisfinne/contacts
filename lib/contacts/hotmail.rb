@@ -8,6 +8,10 @@ class Contacts
     PROTOCOL_ERROR      = "Hotmail has changed its protocols, please upgrade this library first. If that does not work, report this error at http://rubyforge.org/forum/?group_id=2693"
     PWDPAD = "IfYouAreReadingThisYouHaveTooMuchFreeTime"
     MAX_HTTP_THREADS    = 8
+
+    def full_contacts
+      contacts
+    end
     
     def real_connect
       data, resp, cookies, forward = get(URL)
