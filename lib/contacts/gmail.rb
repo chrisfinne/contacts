@@ -18,10 +18,11 @@ class Contacts
       
       @full_contacts = feed.elements.to_a('entry').collect do |entry|
         hash={}
+        hash[:id] = entry.text('id').split('/').pop
         hash[:contact_name] = entry.elements['title'].text
         entry.elements.each('gd:email') do |e|
           if e.attribute('primary')
-            hash[:contact_name] = email = e.attribute('address').value 
+            hash[:email] = e.attribute('address').value 
           else
             hash[:other_emails] ||= []
             hash[:other_emails] << e.attribute('address').value 

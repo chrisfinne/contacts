@@ -10,7 +10,7 @@ class Contacts
     MAX_HTTP_THREADS    = 8
 
     def full_contacts
-      contacts
+      contacts.to_a.collect{|a| {:contact_name=>a[0], :email=>a[1]}}
     end
     
     def real_connect
