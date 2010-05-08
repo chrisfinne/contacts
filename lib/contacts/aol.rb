@@ -1,5 +1,5 @@
 class Contacts
-  require 'hpricot'
+  require 'nokogiri'
   require 'csv'
   class Aol < Base
     URL                 = "http://www.aol.com/"
@@ -60,9 +60,9 @@ class Contacts
         data, resp, cookies, forward, old_url = get(forward, cookies, old_url) + [forward]
       end
  
-      doc = Hpricot(data)
+      doc = Nokogiri(data)
       (doc/:input).each do |input|
-        postdata["usrd"] = input.attributes["value"] if input.attributes["name"] == "usrd"
+        postdata["usrd"] = input.attributes["value"].to_s if input.attributes["name"].to_s == "usrd"
       end
       # parse data for <input name="usrd" value="2726212" type="hidden"> and add it to the postdata
  
@@ -111,9 +111,9 @@ class Contacts
         end
  
         # parse data and grab <input name="user" value="8QzMPIAKs2" type="hidden">
-        doc = Hpricot(data)
+        doc = Nokogiri(data)
         (doc/:input).each do |input|
-          postdata["user"] = input.attributes["value"] if input.attributes["name"] == "user"
+          postdata["user"] = input.attributes["value"].to_s if input.attributes["name"].to_s == "user"
         end
         
         data, resp, cookies, forward, old_url = get(CONTACT_LIST_CSV_URL, @cookies, CONTACT_LIST_URL) + [CONTACT_LIST_URL]
