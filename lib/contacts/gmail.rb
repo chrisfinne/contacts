@@ -16,6 +16,8 @@ class Contacts
       
       feed = @client.get(CONTACTS_FEED).to_xml
       
+      File.open(File.join(RAILS_ROOT,'tmp',"gmail_#{@login}_#{Time.now.to_i}.xml"),'w') {|f| f << feed } rescue nil
+      
       @full_contacts = feed.elements.to_a('entry').collect do |entry|
         hash={}
         hash[:id] = entry.text('id').split('/').pop
