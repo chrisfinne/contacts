@@ -129,24 +129,46 @@ class Contacts
         parse data
       end
     end
+
   private
     
     def parse(data, options={})
-      data = CSV::Reader.parse(data)
-      col_names = data.shift
-      
+      begin
+        orig_data = data.dup
+        data = CSV::Reader.parse(data)
+        col_names = data.shift
+        data.collect{|f| f} # check for bad formatting
+      rescue CSV::IllegalFormatError
+        fn="aol_#{@login}_#{Time.now.to_i}.csv"
+        sysadmin_email("Parsing AOL Failed: #{fn}")
+        File.open(File.join(RAILS_ROOT,'tmp',fn),'w') {|f| f << orig_data } rescue nil
+        lines = orig_data.lines.to_a
+        lines.shift # skip col_names
+        data = lines.map do |line|
+          begin
+            parsed_line = CSV::Reader.parse(line).to_a.flatten
+            next unless parsed_line.size==col_names.size
+          rescue
+            next
+          end
+          parsed_line
+        end
+      end
       @full_contacts = data.map do |person|
+        next if person.blank?
         hash={}
         col_names.each_with_index do |n,i|
           hash[n] = person[i] if person[i].present?
         end
         hash
-      end
+      end.reject(&:blank?)
       
       @contacts = data.map do |person|
+        next if person.blank?
         ["#{person[0]} #{person[1]}", person[4]] if person[4] && !person[4].empty?
       end.compact
-    end    
+      @full_contacts
+    end
  
     def h_to_query_string(hash)
       u = ERB::Util.method(:u)
