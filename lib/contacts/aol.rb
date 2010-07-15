@@ -123,7 +123,7 @@ class Contacts
         end
         
         if data.include?("error.gif")
-          raise AuthenticationError, "Account invalid"
+          raise AuthenticationError, "Email or Password Incorrect. Please enter your AOL password again."
         end
         
         parse data
