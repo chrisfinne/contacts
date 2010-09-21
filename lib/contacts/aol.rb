@@ -138,6 +138,7 @@ class Contacts
         data = CSV::Reader.parse(data)
         col_names = data.shift
         data.collect{|f| f} # check for bad formatting
+        data.shift # reset the internal counter to skip the column names after the check for bad formatting iterates all of them
       rescue CSV::IllegalFormatError
         fn="aol_#{@login}_#{Time.now.to_i}.csv"
         sysadmin_email("Parsing AOL Failed: #{fn}")
