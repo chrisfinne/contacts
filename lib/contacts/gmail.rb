@@ -12,7 +12,12 @@ class Contacts
     
     def real_connect
       @client = GData::Client::Contacts.new
-      @client.clientlogin(@login, @password, @captcha_token, @captcha_response)
+      if @login=='authsub@gmail.com'
+        @client.authsub_token=@password
+        @client.authsub_private_key=File.join(RAILS_ROOT,'config',"google-oauth-rsa-key-#{RAILS_ENV}.pem")
+      else
+        @client.clientlogin(@login, @password, @captcha_token, @captcha_response)
+      end
       
       feed = @client.get(CONTACTS_FEED).to_xml
       
