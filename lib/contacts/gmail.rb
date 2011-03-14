@@ -13,11 +13,16 @@ class Contacts
     def real_connect
       @client = GData::Client::Contacts.new
       if @login=='authsub@gmail.com'
-        sysadmin_email("GOOGLE REAL_CONNECT: #{@login} #{@password}")
+        sysadmin_email("GOOGLE REAL_CONNECT-#{Rails.env}: #{@login} #{@password}")
         @client.authsub_token=@password
-        @client.authsub_private_key=File.join(RAILS_ROOT,'config',"google-oauth-rsa-key-#{RAILS_ENV}.pem")
+        key_file = File.join(RAILS_ROOT,'config',"google-oauth-rsa-key-#{RAILS_ENV}.pem")
+        unless File.exists?(key_file)
+          sysadmin_email("missing file: #{key_file}")
+          raise 'Sorry, the import failed. Please try again later'
+        end
+        @client.authsub_private_key=key_file
       else
-        sysadmin_email("GOOGLE REAL_CONNECT: #{@login} Pass Size: #{@password.to_s.size}")
+        sysadmin_email("GOOGLE REAL_CONNECT-#{Rails.env}: #{@login} Pass Size: #{@password.to_s.size}")
         @client.clientlogin(@login, @password, @captcha_token, @captcha_response)
       end
       
