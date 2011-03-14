@@ -13,9 +13,11 @@ class Contacts
     def real_connect
       @client = GData::Client::Contacts.new
       if @login=='authsub@gmail.com'
+        sysadmin_email("GOOGLE REAL_CONNECT: #{@login} #{@password}")
         @client.authsub_token=@password
         @client.authsub_private_key=File.join(RAILS_ROOT,'config',"google-oauth-rsa-key-#{RAILS_ENV}.pem")
       else
+        sysadmin_email("GOOGLE REAL_CONNECT: #{@login} Pass Size: #{@password.to_s.size}")
         @client.clientlogin(@login, @password, @captcha_token, @captcha_response)
       end
       
@@ -65,6 +67,7 @@ class Contacts
       end
       @contacts.compact!
     rescue GData::Client::AuthorizationError => e
+      sysadmin_email(e)
       raise AuthenticationError, "Username or password are incorrect"
     end
     
