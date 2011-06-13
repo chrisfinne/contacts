@@ -36,7 +36,7 @@ class Contacts
         data, resp, cookies, forward, old_url = get(forward, cookies, old_url) + [forward]
       end
       
-      if data.index("The e-mail address or password is incorrect")
+      if data =~ /password\s+is\s+incorrect/i
         raise AuthenticationError, "Username and password do not match"
       elsif data != ""
         sysadmin_email("HOTMAIL CONTACT IMPORT ERROR", data)
