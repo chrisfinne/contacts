@@ -71,7 +71,11 @@ class Contacts
       @contacts.compact!
     rescue GData::Client::AuthorizationError => e
       sysadmin_email(e)
-      raise AuthenticationError, "Username or password are incorrect"
+      if e.message.include?('Error=AccountDisabled')
+        raise AuthenticationError, "Google says the account is Disabled for Export"
+      else
+        raise AuthenticationError, "Username or password are incorrect"
+      end
     end
     
     private
