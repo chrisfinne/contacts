@@ -73,6 +73,8 @@ class Contacts
       sysadmin_email(e)
       if e.message.include?('Error=AccountDisabled')
         raise AuthenticationError, "Google says the account is Disabled for Export"
+      elsif e.message.include?('InvalidSecondFactor')
+        raise AuthenticationError, "Your Google account has 2-factor authentication"
       else
         raise AuthenticationError, "Username or password are incorrect"
       end
