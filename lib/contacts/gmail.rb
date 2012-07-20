@@ -14,7 +14,11 @@ class Contacts
       @client = GData::Client::Contacts.new
       if @login=='authsub@gmail.com'
         @client.authsub_token=@password
-        key_file = File.join(RAILS_ROOT,'config',"google-oauth-rsa-key-#{RAILS_ENV}.pem")
+        if `hostname`.strip=='cp3'
+          key_file = File.join(RAILS_ROOT,'config',"bizreferrals.us.key.pem")
+        else
+          key_file = File.join(RAILS_ROOT,'config',"google-oauth-rsa-key-#{RAILS_ENV}.pem")
+        end
         unless File.exists?(key_file)
           sysadmin_email("missing file: #{key_file}")
           raise 'Sorry, the import failed. Please try again later'
